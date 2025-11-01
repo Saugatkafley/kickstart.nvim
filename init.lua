@@ -299,15 +299,15 @@ require('lazy').setup({
       'nvim-telescope/telescope.nvim',
     },
   },
-  {
-    's1n7ax/nvim-window-picker',
-    name = 'window-picker',
-    event = 'VeryLazy',
-    version = '2.*',
-    config = function()
-      require('window-picker').setup()
-    end,
-  },
+  -- {
+  -- 	's1n7ax/nvim-window-picker',
+  -- 	name = 'window-picker',
+  -- 	event = 'VeryLazy',
+  -- 	version = '2.*',
+  -- 	config = function()
+  -- 		require('window-picker').setup()
+  -- 	end,
+  -- },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
@@ -906,12 +906,12 @@ require('lazy').setup({
       },
     },
     opts = {
-      notify_on_error = false,
+      notify_on_error = true,
       format_on_save = function(bufnr)
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { c = true, cpp = true, lua = true, go = true, js = true, ts = true }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         else
@@ -991,7 +991,7 @@ require('lazy').setup({
         -- <c-k>: Toggle signature help
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'default',
+        preset = 'super-tab',
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -1000,13 +1000,13 @@ require('lazy').setup({
       appearance = {
         -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
         -- Adjusts spacing to ensure icons are aligned
-        nerd_font_variant = 'mono',
+        nerd_font_variant = 'normal',
       },
 
       completion = {
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        documentation = { auto_show = false, auto_show_delay_ms = 500 },
+        documentation = { auto_show = true, auto_show_delay_ms = 500 },
       },
 
       sources = {
@@ -1075,122 +1075,133 @@ require('lazy').setup({
       })
     end,
   },
+  -- Lazy
   {
-    'catppuccin/nvim',
-    name = 'catppuccin',
-    priority = 1000,
-    config = function()
-      require('catppuccin').setup {
-        flavour = 'mocha', -- latte, frappe, macchiato, mocha
-        background = {     -- :h background
-          light = 'latte',
-          dark = 'mocha',
-        },
-        transparent_background = false, -- disables setting the background color.
-        float = {
-          transparent = false,          -- enable transparent floating windows
-          solid = false,                -- use solid styling for floating windows, see |winborder|
-        },
-        show_end_of_buffer = true,      -- shows the '~' characters after the end of buffers
-        term_colors = true,             -- sets terminal colors (e.g. `g:terminal_color_0`)
-        dim_inactive = {
-          enabled = true,               -- dims the background color of inactive window
-          shade = 'dark',
-          percentage = 0.15,            -- percentage of the shade to apply to the inactive window
-        },
-        no_italic = false,              -- Force no italic
-        no_bold = false,                -- Force no bold
-        no_underline = false,           -- Force no underline
-        styles = {                      -- Handles the styles of general hi groups (see `:h highlight-args`):
-          comments = { 'italic' },      -- Change the style of comments
-          conditionals = { 'italic' },
-          loops = {},
-          functions = {},
-          keywords = {},
-          strings = {},
-          variables = {},
-          numbers = {},
-          booleans = {},
-          properties = {},
-          types = {},
-          operators = {},
-          -- miscs = {}, -- Uncomment to turn off hard-coded styles
-        },
-        lsp_styles = { -- Handles the style of specific lsp hl groups (see `:h lsp-highlight`).
-          virtual_text = {
-            errors = { 'italic' },
-            hints = { 'italic' },
-            warnings = { 'italic' },
-            information = { 'italic' },
-            ok = { 'italic' },
-          },
-          underlines = {
-            errors = { 'underline' },
-            hints = { 'underline' },
-            warnings = { 'underline' },
-            information = { 'underline' },
-            ok = { 'underline' },
-          },
-          inlay_hints = {
-            background = true,
-          },
-        },
-        color_overrides = {},
-        custom_highlights = function(colors)
-          return {
-            Comment = { fg = colors.flamingo },
-            TabLineSel = { bg = colors.pink },
-            CmpBorder = { fg = colors.surface2 },
-            Pmenu = { bg = colors.none },
-          }
-        end,
-        highlight_overrides = {
-          all = function(colors)
-            return {
-              NvimTreeNormal = { fg = colors.none },
-              CmpBorder = { fg = '#3e4145' },
-            }
-          end,
-          latte = function(latte)
-            return {
-              Normal = { fg = latte.base },
-            }
-          end,
-          frappe = function(frappe)
-            return {
-              ['@comment'] = { fg = frappe.surface2, style = { 'italic' } },
-            }
-          end,
-          macchiato = function(macchiato)
-            return {
-              LineNr = { fg = macchiato.overlay1 },
-            }
-          end,
-          mocha = function(mocha)
-            return {
-              Comment = { fg = mocha.flamingo },
-            }
-          end,
-        },
-        default_integrations = false,
-        auto_integrations = true,
-        integrations = {
-          cmp = true,
-          gitsigns = true,
-          nvimtree = true,
-          notify = true,
-          mini = {
-            enabled = true,
-            indentscope_color = '',
-          },
-          -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
-        },
-      }
+    'olimorris/onedarkpro.nvim',
+    priority = 1000, -- Ensure it loads first
 
-      -- setup must be called before loading
-      vim.cmd.colorscheme 'catppuccin-mocha'
+    config = function()
+      -- somewhere in your config:
+      vim.cmd 'colorscheme onedark'
     end,
   },
+
+  -- {
+  -- 	'catppuccin/nvim',
+  -- 	name = 'catppuccin',
+  -- 	priority = 1000,
+  -- 	config = function()
+  -- 		require('catppuccin').setup {
+  -- 			flavour = 'mocha', -- latte, frappe, macchiato, mocha
+  -- 			background = { -- :h background
+  -- 				light = 'latte',
+  -- 				dark = 'mocha',
+  -- 			},
+  -- 			transparent_background = false, -- disables setting the background color.
+  -- 			float = {
+  -- 				transparent = false, -- enable transparent floating windows
+  -- 				solid = false, -- use solid styling for floating windows, see |winborder|
+  -- 			},
+  -- 			show_end_of_buffer = true, -- shows the '~' characters after the end of buffers
+  -- 			term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
+  -- 			dim_inactive = {
+  -- 				enabled = true, -- dims the background color of inactive window
+  -- 				shade = 'dark',
+  -- 				percentage = 0.15, -- percentage of the shade to apply to the inactive window
+  -- 			},
+  -- 			no_italic = false, -- Force no italic
+  -- 			no_bold = false, -- Force no bold
+  -- 			no_underline = false, -- Force no underline
+  -- 			styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
+  -- 				comments = { 'italic' }, -- Change the style of comments
+  -- 				conditionals = { 'italic' },
+  -- 				loops = {},
+  -- 				functions = {},
+  -- 				keywords = {},
+  -- 				strings = {},
+  -- 				variables = {},
+  -- 				numbers = {},
+  -- 				booleans = {},
+  -- 				properties = {},
+  -- 				types = {},
+  -- 				operators = {},
+  -- 				-- miscs = {}, -- Uncomment to turn off hard-coded styles
+  -- 			},
+  -- 			lsp_styles = { -- Handles the style of specific lsp hl groups (see `:h lsp-highlight`).
+  -- 				virtual_text = {
+  -- 					errors = { 'italic' },
+  -- 					hints = { 'italic' },
+  -- 					warnings = { 'italic' },
+  -- 					information = { 'italic' },
+  -- 					ok = { 'italic' },
+  -- 				},
+  -- 				underlines = {
+  -- 					errors = { 'underline' },
+  -- 					hints = { 'underline' },
+  -- 					warnings = { 'underline' },
+  -- 					information = { 'underline' },
+  -- 					ok = { 'underline' },
+  -- 				},
+  -- 				inlay_hints = {
+  -- 					background = true,
+  -- 				},
+  -- 			},
+  -- 			color_overrides = {},
+  -- 			custom_highlights = function(colors)
+  -- 				return {
+  -- 					Comment = { fg = colors.flamingo },
+  -- 					TabLineSel = { bg = colors.pink },
+  -- 					CmpBorder = { fg = colors.surface2 },
+  -- 					Pmenu = { bg = colors.none },
+  -- 				}
+  -- 			end,
+  -- 			highlight_overrides = {
+  -- 				all = function(colors)
+  -- 					return {
+  -- 						NvimTreeNormal = { fg = colors.none },
+  -- 						CmpBorder = { fg = '#3e4145' },
+  -- 					}
+  -- 				end,
+  -- 				latte = function(latte)
+  -- 					return {
+  -- 						Normal = { fg = latte.base },
+  -- 					}
+  -- 				end,
+  -- 				frappe = function(frappe)
+  -- 					return {
+  -- 						['@comment'] = { fg = frappe.surface2, style = { 'italic' } },
+  -- 					}
+  -- 				end,
+  -- 				macchiato = function(macchiato)
+  -- 					return {
+  -- 						LineNr = { fg = macchiato.overlay1 },
+  -- 					}
+  -- 				end,
+  -- 				mocha = function(mocha)
+  -- 					return {
+  -- 						Comment = { fg = mocha.flamingo },
+  -- 					}
+  -- 				end,
+  -- 			},
+  -- 			default_integrations = false,
+  -- 			auto_integrations = true,
+  -- 			integrations = {
+  -- 				cmp = true,
+  -- 				gitsigns = true,
+  -- 				nvimtree = true,
+  -- 				notify = true,
+  -- 				mini = {
+  -- 					enabled = true,
+  -- 					indentscope_color = '',
+  -- 				},
+  -- 				-- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
+  -- 			},
+  -- 		}
+
+  -- 		-- setup must be called before loading
+  -- 		vim.cmd.colorscheme 'catppuccin-mocha'
+  -- 	end,
+  -- },
 
   -- { -- You can easily change to a different colorscheme.
   --   -- Change the name of the colorscheme plugin below, and then
