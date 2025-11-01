@@ -258,19 +258,28 @@ require('lazy').setup({
 
   -- Alternatively, use `config = function() ... end` for full control over the configuration.
   -- If you prefer to call `setup` explicitly, use:
-  --    {
-  --        'lewis6991/gitsigns.nvim',
-  --        config = function()
-  --            require('gitsigns').setup({
-  --                -- Your gitsigns configuration here
-  --            })
-  --        end,
-  --    }
+  -- {
+  --   'lewis6991/gitsigns.nvim',
+  --   config = function()
+  --     require('gitsigns').setup {
+  --       -- Your gitsigns configuration here
+  --     }
+  --   end,
+  -- },
   --
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`.
   --
   -- See `:help gitsigns` to understand what the configuration keys do
+  -- Lua
+  {
+    'folke/persistence.nvim',
+    event = 'BufReadPre', -- this will only start session saving when an actual file was opened
+    opts = {
+      -- add any custom options here
+    },
+  },
+
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
@@ -289,6 +298,15 @@ require('lazy').setup({
     dependencies = {
       'nvim-telescope/telescope.nvim',
     },
+  },
+  {
+    's1n7ax/nvim-window-picker',
+    name = 'window-picker',
+    event = 'VeryLazy',
+    version = '2.*',
+    config = function()
+      require('window-picker').setup()
+    end,
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
@@ -312,7 +330,7 @@ require('lazy').setup({
       'nvim-treesitter/nvim-treesitter',
     },
     opts = {
-      lsp_keymaps = true,
+      lsp_keymaps = false,
       -- other options
     },
     config = function(lp, opts)
@@ -335,7 +353,7 @@ require('lazy').setup({
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
     opts = {},
   },
-  {      -- Useful plugin to show you pending keybinds.
+  {                     -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     opts = {
@@ -416,7 +434,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -473,7 +491,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-
+      vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earcch [C]ommands' })
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
@@ -524,7 +542,7 @@ require('lazy').setup({
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', opts = {} },
+      -- { 'j-huifget.nvim',    opts = {} },
 
       -- Allows extra capabilities provided by blink.cmp
       'saghen/blink.cmp',
@@ -709,7 +727,7 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
+        gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -904,7 +922,7 @@ require('lazy').setup({
         end
       end,
       formatters_by_ft = {
-        lua = { 'stylua' },
+        -- lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         python = { 'isort', 'black' },
         --
@@ -1025,6 +1043,9 @@ require('lazy').setup({
 
       local cmp = require 'cmp'
 
+      opts = opts or {}
+      opts.mapping = opts.mappinng or {}
+
       opts.mapping = vim.tbl_extend('force', opts.mapping, {
         ['<Tab>'] = cmp.mapping(function(fallback)
           if cmp.visible() then
@@ -1054,57 +1075,175 @@ require('lazy').setup({
       })
     end,
   },
-
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
+      require('catppuccin').setup {
+        flavour = 'mocha', -- latte, frappe, macchiato, mocha
+        background = {     -- :h background
+          light = 'latte',
+          dark = 'mocha',
+        },
+        transparent_background = false, -- disables setting the background color.
+        float = {
+          transparent = false,          -- enable transparent floating windows
+          solid = false,                -- use solid styling for floating windows, see |winborder|
+        },
+        show_end_of_buffer = true,      -- shows the '~' characters after the end of buffers
+        term_colors = true,             -- sets terminal colors (e.g. `g:terminal_color_0`)
+        dim_inactive = {
+          enabled = true,               -- dims the background color of inactive window
+          shade = 'dark',
+          percentage = 0.15,            -- percentage of the shade to apply to the inactive window
+        },
+        no_italic = false,              -- Force no italic
+        no_bold = false,                -- Force no bold
+        no_underline = false,           -- Force no underline
+        styles = {                      -- Handles the styles of general hi groups (see `:h highlight-args`):
+          comments = { 'italic' },      -- Change the style of comments
+          conditionals = { 'italic' },
+          loops = {},
+          functions = {},
+          keywords = {},
+          strings = {},
+          variables = {},
+          numbers = {},
+          booleans = {},
+          properties = {},
+          types = {},
+          operators = {},
+          -- miscs = {}, -- Uncomment to turn off hard-coded styles
+        },
+        lsp_styles = { -- Handles the style of specific lsp hl groups (see `:h lsp-highlight`).
+          virtual_text = {
+            errors = { 'italic' },
+            hints = { 'italic' },
+            warnings = { 'italic' },
+            information = { 'italic' },
+            ok = { 'italic' },
+          },
+          underlines = {
+            errors = { 'underline' },
+            hints = { 'underline' },
+            warnings = { 'underline' },
+            information = { 'underline' },
+            ok = { 'underline' },
+          },
+          inlay_hints = {
+            background = true,
+          },
+        },
+        color_overrides = {},
+        custom_highlights = function(colors)
+          return {
+            Comment = { fg = colors.flamingo },
+            TabLineSel = { bg = colors.pink },
+            CmpBorder = { fg = colors.surface2 },
+            Pmenu = { bg = colors.none },
+          }
+        end,
+        highlight_overrides = {
+          all = function(colors)
+            return {
+              NvimTreeNormal = { fg = colors.none },
+              CmpBorder = { fg = '#3e4145' },
+            }
+          end,
+          latte = function(latte)
+            return {
+              Normal = { fg = latte.base },
+            }
+          end,
+          frappe = function(frappe)
+            return {
+              ['@comment'] = { fg = frappe.surface2, style = { 'italic' } },
+            }
+          end,
+          macchiato = function(macchiato)
+            return {
+              LineNr = { fg = macchiato.overlay1 },
+            }
+          end,
+          mocha = function(mocha)
+            return {
+              Comment = { fg = mocha.flamingo },
+            }
+          end,
+        },
+        default_integrations = false,
+        auto_integrations = true,
+        integrations = {
+          cmp = true,
+          gitsigns = true,
+          nvimtree = true,
+          notify = true,
+          mini = {
+            enabled = true,
+            indentscope_color = '',
+          },
+          -- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
         },
       }
 
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      -- setup must be called before loading
+      vim.cmd.colorscheme 'catppuccin-mocha'
     end,
   },
 
+  -- { -- You can easily change to a different colorscheme.
+  --   -- Change the name of the colorscheme plugin below, and then
+  --   -- change the command in the config to whatever the name of that colorscheme is.
+  --   --
+  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+  --   'folke/tokyonight.nvim',
+  --   priority = 1000, -- Make sure to load this before all the other start plugins.
+  --   config = function()
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require('tokyonight').setup {
+  --       styles = {
+  --         comments = { italic = true }, -- Disable italics in comments
+  --       },
+  --     }
+
+  --     -- Load the colorscheme here.
+  --     -- Like many other themes, this one has different styles, and you could load
+  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --     vim.cmd.colorscheme 'tokyonight-night'
+  --   end,
+  -- },
+
+  -- { "bluz71/vim-nightfly-colors", name = "nightfly", lazy = false, priority = 1000 },
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
-  -- {
-  --   'ray-x/go.nvim',
-  --   dependencies = { -- optional packages
-  --     'ray-x/guihua.lua',
-  --     'neovim/nvim-lspconfig',
-  --     'nvim-treesitter/nvim-treesitter',
-  --   },
-  --   opts = {
-  --     lsp_keymaps = true,
-  --     -- other options
-  --   },
-  --   config = function(lp, opts)
-  --     require('go').setup(opts)
-  --     local format_sync_grp = vim.api.nvim_create_augroup('GoFormat', {})
-  --     vim.api.nvim_create_autocmd('BufWritePre', {
-  --       pattern = '*.go',
-  --       callback = function()
-  --         require('go.format').goimports()
-  --       end,
-  --       group = format_sync_grp,
-  --     })
-  --   end,
-  --   event = { 'CmdlineEnter' },
-  --   ft = { 'go', 'gomod' },
-  --   build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
-  -- },
+  {
+    'ray-x/go.nvim',
+    dependencies = { -- optional packages
+      'ray-x/guihua.lua',
+      'neovim/nvim-lspconfig',
+      'nvim-treesitter/nvim-treesitter',
+    },
+    opts = {
+      lsp_keymaps = true,
+      -- other options
+    },
+    config = function(lp, opts)
+      require('go').setup(opts)
+      local format_sync_grp = vim.api.nvim_create_augroup('GoFormat', {})
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        pattern = '*.go',
+        callback = function()
+          require('go.format').goimports()
+        end,
+        group = format_sync_grp,
+      })
+    end,
+    event = { 'CmdlineEnter' },
+    ft = { 'go', 'gomod' },
+    build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
+  },
+  -- { 'nvim-mini/mini.nvim',      version = false },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -1117,12 +1256,50 @@ require('lazy').setup({
       --  - ci'  - [C]hange [I]nside [']quote
       require('mini.ai').setup { n_lines = 500 }
 
+      -- require('mini.notify').setup()
+
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
+      require('mini.map').setup {
+        -- Highlight integrations (none by default)
+        integrations = nil,
+        -- Symbols used to display data
+        symbols = {
+          -- Encode symbols. See `:h MiniMap.config` for specification and
+          -- `:h MiniMap.gen_encode_symbols` for pre-built ones.
+          -- Default: solid blocks with 3x2 resolution.
+          encode = nil,
+
+          -- Scrollbar parts for view and line. Use empty string to disable any.
+          scroll_line = '█',
+          scroll_view = '┃',
+        },
+
+        -- Window options
+        window = {
+          -- Whether window is focusable in normal way (with `wincmd` or mouse)
+          focusable = false,
+
+          -- Side to stick ('left' or 'right')
+          side = 'right',
+
+          -- Whether to show count of multiple integration highlights
+          show_integration_count = true,
+
+          -- Total width
+          width = 10,
+
+          -- Value of 'winblend' option
+          winblend = 25,
+
+          -- Z-index
+          zindex = 10,
+        },
+      }
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
@@ -1177,13 +1354,29 @@ require('lazy').setup({
   --
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
+  {
+    'nvim-mini/mini.pairs',
+    event = 'VeryLazy',
+    opts = {
+      modes = { insert = true, command = true, terminal = false },
+      skip_next = [=[[%w%%%'%[%"%.%`%$]]=],
+      skip_ts = { 'string' },
+      skip_unbalanced = true,
+      markdown = true,
+      go = true,
+    },
+    config = function(_, opts)
+      require('mini.pairs').setup(opts)
+    end,
+  },
   --
   require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
-  require 'kickstart.plugins.mini-ai',
+  -- require 'kickstart.plugins.mini-ai',
+  require 'kickstart.plugins.autosave',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`

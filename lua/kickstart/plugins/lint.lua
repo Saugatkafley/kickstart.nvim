@@ -6,7 +6,11 @@ return {
     config = function()
       local lint = require 'lint'
       lint.linters_by_ft = {
-        markdown = { 'markdownlint' },
+        -- markdown = { 'markdownlint' },
+        -- go = { 'golangci-lint' },
+        markdown = { 'vale' },
+        ts = { 'eslint_d' },
+        js = { 'eslint_d' },
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
