@@ -89,7 +89,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-
+vim.opt.laststatus = 3
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
 
@@ -902,6 +902,19 @@ require('lazy').setup({
     end,
   },
   {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      require('lualine').setup {
+        options = {
+          theme = 'auto',
+          globalstatus = true,
+          icons_enabled = true,
+        },
+      }
+    end,
+  },
+  {
     'esmuellert/nvim-eslint',
     config = function()
       require('nvim-eslint').setup {}
@@ -1328,8 +1341,9 @@ require('lazy').setup({
       require('mini.surround').setup()
       require('mini.map').setup {
         -- Highlight integrations (none by default)
-        integrations = nil,
         -- Symbols used to display data
+        versio = false,
+        integrations = nil,
         symbols = {
           -- Encode symbols. See `:h MiniMap.config` for specification and
           -- `:h MiniMap.gen_encode_symbols` for pre-built ones.
@@ -1344,7 +1358,7 @@ require('lazy').setup({
         -- Window options
         window = {
           -- Whether window is focusable in normal way (with `wincmd` or mouse)
-          focusable = false,
+          focusable = true,
 
           -- Side to stick ('left' or 'right')
           side = 'right',
@@ -1366,17 +1380,17 @@ require('lazy').setup({
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
+      -- local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      -- statusline.setup { use_icons = vim.g.have_nerd_font }
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
       -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
+      -- ---@diagnostic disable-next-line: duplicate-set-field
+      -- statusline.section_location = function()
+      --   return '%2l:%-2v'
+      -- end
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
