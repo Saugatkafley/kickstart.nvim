@@ -330,7 +330,7 @@ require('lazy').setup({
       'nvim-treesitter/nvim-treesitter',
     },
     opts = {
-      lsp_keymaps = false,
+      lsp_keymaps = true,
       -- other options
     },
     config = function(lp, opts)
@@ -890,7 +890,12 @@ require('lazy').setup({
       }
     end,
   },
-
+  {
+    'esmuellert/nvim-eslint',
+    config = function()
+      require('nvim-eslint').setup {}
+    end,
+  },
   { -- Autoformat
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
@@ -911,7 +916,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true, lua = true, go = true, js = true, ts = true }
+        local disable_filetypes = { c = true, cpp = true, lua = true, go = true }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         else
@@ -927,8 +932,9 @@ require('lazy').setup({
         python = { 'isort', 'black' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        -- go = {'gofmt'}
+        -- javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        -- go = {'gofmt'},
+        vue = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
