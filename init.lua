@@ -299,6 +299,16 @@ require('lazy').setup({
       'nvim-telescope/telescope.nvim',
     },
   },
+  {
+    'amitds1997/remote-nvim.nvim',
+    version = '*',                     -- Pin to GitHub releases
+    dependencies = {
+      'nvim-lua/plenary.nvim',         -- For standard functions
+      'MunifTanjim/nui.nvim',          -- To build the plugin UI
+      'nvim-telescope/telescope.nvim', -- For picking b/w different remote methods
+    },
+    config = true,
+  },
   -- {
   -- 	's1n7ax/nvim-window-picker',
   -- 	name = 'window-picker',
@@ -363,6 +373,13 @@ require('lazy').setup({
     'pmizio/typescript-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
     opts = {},
+  },
+  {
+    'chipsenkbeil/distant.nvim',
+    branch = 'v0.3',
+    config = function()
+      require('distant'):setup()
+    end,
   },
   {                     -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
@@ -747,8 +764,9 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
+        vue_ls = {},
         ts_ls = {
-          enabled = false,
+          enabled = true,
         },
         vtsls = {
           -- explicitly add default filetypes, so that we can extend
@@ -958,7 +976,7 @@ require('lazy').setup({
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { 'prettierd', 'prettier', stop_after_first = true },
         -- go = {'gofmt'},
-        vue = { 'prettierd', 'prettier', stop_after_first = true },
+        -- vue = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
